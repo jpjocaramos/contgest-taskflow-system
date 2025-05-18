@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -36,14 +35,14 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({ tasks }) => {
     : 0;
 
   // Get top responsible person
-  const responsibleCounts = Object.values(tasks)
+  const responsibleCounts: Record<string, number> = Object.values(tasks)
     .flat()
-    .reduce((acc, task) => {
+    .reduce((acc: Record<string, number>, task) => {
       if (task.responsible) {
         acc[task.responsible] = (acc[task.responsible] || 0) + 1;
       }
       return acc;
-    }, {} as Record<string, number>);
+    }, {});
   
   const topResponsibleEntries = Object.entries(responsibleCounts)
     .sort(([, a], [, b]) => b - a);
@@ -53,14 +52,14 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({ tasks }) => {
     : 'Não atribuído';
   
   // Get top company
-  const companyCounts = Object.values(tasks)
+  const companyCounts: Record<string, number> = Object.values(tasks)
     .flat()
-    .reduce((acc, task) => {
+    .reduce((acc: Record<string, number>, task) => {
       if (task.company) {
         acc[task.company] = (acc[task.company] || 0) + 1;
       }
       return acc;
-    }, {} as Record<string, number>);
+    }, {});
   
   const topCompanyEntries = Object.entries(companyCounts)
     .sort(([, a], [, b]) => b - a);
