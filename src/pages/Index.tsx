@@ -18,8 +18,12 @@ const Index = () => {
     <div className="min-h-screen w-full flex flex-col bg-gradient-to-b from-blue-50 to-indigo-50">
       <header className="bg-white shadow-sm">
         <div className="container-app py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold text-primary">
-            Cont<span className="text-secondary">Gest</span>
+          <div className="h-12">
+            <img 
+              src="/lovable-uploads/59880246-d998-4891-97b3-6b1619e864d3.png" 
+              alt="ContaGest Logo" 
+              className="h-full"
+            />
           </div>
           <Button onClick={() => navigate('/login')}>
             Acessar Sistema

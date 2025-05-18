@@ -115,13 +115,13 @@ const Sidebar = () => {
           <Link to="/dashboard" className="flex items-center justify-center w-full">
             {expanded ? (
               <img 
-                src="/logo-contagest.png" 
+                src="/lovable-uploads/59880246-d998-4891-97b3-6b1619e864d3.png" 
                 alt="ContaGest Logo" 
                 className="transition-all duration-300 h-24"
               />
             ) : (
               <img 
-                src="/logo-mini.png" 
+                src="/lovable-uploads/ac828e75-90a0-4415-82d0-09898abdc274.png" 
                 alt="Logo Minimizado" 
                 className="transition-all duration-300 h-20"
               />
