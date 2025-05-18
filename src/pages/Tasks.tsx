@@ -107,11 +107,36 @@ const Tasks = () => {
         </h1>
         
         <div className="flex items-center gap-4">
-          <Tabs value={viewType} onValueChange={setViewType} className="w-auto">
+          <Tabs defaultValue={viewType} onValueChange={setViewType} className="w-auto">
             <TabsList className="grid grid-cols-2 w-[200px]">
               <TabsTrigger value="kanban">Kanban</TabsTrigger>
               <TabsTrigger value="list">Lista</TabsTrigger>
             </TabsList>
+
+            {/* Kanban View */}
+            <TabsContent value="kanban" className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {columns.map(column => (
+                  <KanbanColumn
+                    key={column.id}
+                    columnId={column.id}
+                    columnName={column.name}
+                    tasks={tasks[column.id]}
+                    onMoveTask={moveTask}
+                    onViewDetails={viewTaskDetails}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+            
+            {/* List View */}
+            <TabsContent value="list" className="mt-6">
+              <TaskList 
+                tasks={tasks} 
+                onViewDetails={viewTaskDetails} 
+                onMoveTask={moveTask} 
+              />
+            </TabsContent>
           </Tabs>
           
           <Dialog open={isNewTaskDialogOpen} onOpenChange={setIsNewTaskDialogOpen}>
@@ -138,31 +163,6 @@ const Tasks = () => {
           <TaskDetails task={selectedTask} onClose={() => setSelectedTask(null)} />
         )}
       </Dialog>
-      
-      {/* Kanban View */}
-      <TabsContent value="kanban" className="mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {columns.map(column => (
-            <KanbanColumn
-              key={column.id}
-              columnId={column.id}
-              columnName={column.name}
-              tasks={tasks[column.id]}
-              onMoveTask={moveTask}
-              onViewDetails={viewTaskDetails}
-            />
-          ))}
-        </div>
-      </TabsContent>
-      
-      {/* List View */}
-      <TabsContent value="list" className="mt-6">
-        <TaskList 
-          tasks={tasks} 
-          onViewDetails={viewTaskDetails} 
-          onMoveTask={moveTask} 
-        />
-      </TabsContent>
     </div>
   );
 };
