@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Dialog } from "@/components/ui/dialog";
@@ -38,10 +37,10 @@ const Tasks = () => {
   // Filters state
   const [filters, setFilters] = useState({
     search: '',
-    responsible: '',
-    company: '',
-    taskType: '',
-    status: '',
+    responsible: 'all',
+    company: 'all',
+    taskType: 'all',
+    status: 'all',
     dateFrom: undefined as Date | undefined,
     dateTo: undefined as Date | undefined,
   });
@@ -94,22 +93,22 @@ const Tasks = () => {
         }
         
         // Filter by responsible
-        if (filters.responsible && task.responsible !== filters.responsible) {
+        if (filters.responsible !== 'all' && task.responsible !== filters.responsible) {
           return false;
         }
         
         // Filter by company
-        if (filters.company && task.company !== filters.company) {
+        if (filters.company !== 'all' && task.company !== filters.company) {
           return false;
         }
         
         // Filter by task type
-        if (filters.taskType && task.type !== filters.taskType) {
+        if (filters.taskType !== 'all' && task.type !== filters.taskType) {
           return false;
         }
         
         // Filter by status (column)
-        if (filters.status && columnId !== filters.status) {
+        if (filters.status !== 'all' && columnId !== filters.status) {
           return false;
         }
         
@@ -147,10 +146,10 @@ const Tasks = () => {
   const clearFilters = () => {
     setFilters({
       search: '',
-      responsible: '',
-      company: '',
-      taskType: '',
-      status: '',
+      responsible: 'all',
+      company: 'all',
+      taskType: 'all',
+      status: 'all',
       dateFrom: undefined,
       dateTo: undefined,
     });

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   DialogContent,
@@ -69,13 +68,14 @@ const NewTaskForm = ({ newTask, onTaskChange, onAddTask, onCancel }: NewTaskForm
           <div className="grid gap-2">
             <Label htmlFor="responsible">Responsável</Label>
             <Select 
-              value={newTask.responsible} 
-              onValueChange={(value) => onTaskChange('responsible', value)}
+              value={newTask.responsible || "none"} 
+              onValueChange={(value) => onTaskChange('responsible', value === "none" ? "" : value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none">Não atribuído</SelectItem>
                 <SelectItem value="João Silva">João Silva</SelectItem>
                 <SelectItem value="Maria Oliveira">Maria Oliveira</SelectItem>
               </SelectContent>
@@ -87,13 +87,14 @@ const NewTaskForm = ({ newTask, onTaskChange, onAddTask, onCancel }: NewTaskForm
           <div className="grid gap-2">
             <Label htmlFor="type">Tipo</Label>
             <Select 
-              value={newTask.type} 
-              onValueChange={(value) => onTaskChange('type', value)}
+              value={newTask.type || "none"} 
+              onValueChange={(value) => onTaskChange('type', value === "none" ? "" : value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none">Não especificado</SelectItem>
                 <SelectItem value="Apuração">Apuração</SelectItem>
                 <SelectItem value="Folha">Folha</SelectItem>
                 <SelectItem value="Contabilidade">Contabilidade</SelectItem>

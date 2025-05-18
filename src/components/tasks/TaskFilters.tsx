@@ -68,7 +68,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               <SelectValue placeholder="Todos" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               {responsibles.map((responsible) => (
                 <SelectItem key={responsible} value={responsible}>{responsible}</SelectItem>
               ))}
@@ -86,7 +86,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               <SelectValue placeholder="Todas" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas</SelectItem>
+              <SelectItem value="all">Todas</SelectItem>
               {companies.map((company) => (
                 <SelectItem key={company} value={company}>{company}</SelectItem>
               ))}
@@ -104,7 +104,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               <SelectValue placeholder="Todos" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               {taskTypes.map((type) => (
                 <SelectItem key={type} value={type}>{type}</SelectItem>
               ))}
@@ -122,7 +122,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               <SelectValue placeholder="Todos" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="todo">A Fazer</SelectItem>
               <SelectItem value="inProgress">Em Progresso</SelectItem>
               <SelectItem value="waitingClient">Aguardando Cliente</SelectItem>
