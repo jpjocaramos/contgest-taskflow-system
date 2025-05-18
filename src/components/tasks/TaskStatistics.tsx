@@ -10,7 +10,6 @@ import {
   CheckSquare,
   Clock,
   AlertCircle,
-  RefreshCw,
   UserCheck,
   Building2
 } from 'lucide-react';
@@ -46,9 +45,12 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({ tasks }) => {
       return acc;
     }, {} as Record<string, number>);
   
-  const topResponsible = Object.entries(responsibleCounts)
-    .sort(([, a], [, b]) => b - a)
-    .map(([name]) => name)[0] || 'Não atribuído';
+  const topResponsibleEntries = Object.entries(responsibleCounts)
+    .sort(([, a], [, b]) => b - a);
+  
+  const topResponsible = topResponsibleEntries.length > 0 
+    ? topResponsibleEntries[0][0] 
+    : 'Não atribuído';
   
   // Get top company
   const companyCounts = Object.values(tasks)
@@ -60,9 +62,12 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({ tasks }) => {
       return acc;
     }, {} as Record<string, number>);
   
-  const topCompany = Object.entries(companyCounts)
-    .sort(([, a], [, b]) => b - a)
-    .map(([name]) => name)[0] || 'Não disponível';
+  const topCompanyEntries = Object.entries(companyCounts)
+    .sort(([, a], [, b]) => b - a);
+  
+  const topCompany = topCompanyEntries.length > 0 
+    ? topCompanyEntries[0][0] 
+    : 'Não disponível';
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">

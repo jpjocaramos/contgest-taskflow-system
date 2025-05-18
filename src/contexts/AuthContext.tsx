@@ -13,7 +13,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  hasPermission: (module: string, action: 'view' | 'create' | 'update' | 'delete') => boolean;
+  hasPermission: (module: string, action: 'view' | 'create' | 'update' | 'delete' | 'edit') => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,7 +43,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsAuthenticated(false);
   };
 
-  const hasPermission = (module: string, action: 'view' | 'create' | 'update' | 'delete'): boolean => {
+  const hasPermission = (module: string, action: 'view' | 'create' | 'update' | 'delete' | 'edit'): boolean => {
+    // Map 'edit' to 'update' to maintain compatibility
+    const mappedAction = action === 'edit' ? 'update' : action;
+    
     // Mock permission checks
     if (!isAuthenticated || !user) {
       return false;
@@ -56,7 +59,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // For employees, restrict some modules/actions
     if (user.role === 'employee') {
       if (module === 'settings' || module === 'users') {
-        return action === 'view';
+        return mappedAction === 'view';
       }
       return true;
     }

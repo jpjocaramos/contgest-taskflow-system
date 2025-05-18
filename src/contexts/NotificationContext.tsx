@@ -9,12 +9,14 @@ interface Notification {
   type: 'email' | 'popup' | 'panel';
   read: boolean;
   createdAt: Date;
+  date: Date; // Added date property
+  link?: string; // Added optional link property
 }
 
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
-  addNotification: (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => void;
+  addNotification: (notification: Omit<Notification, 'id' | 'read' | 'createdAt' | 'date'>) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   clearNotifications: () => void;
@@ -28,12 +30,14 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const unreadCount = notifications.filter(n => !n.read).length;
 
   // Add a notification
-  const addNotification = (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => {
+  const addNotification = (notification: Omit<Notification, 'id' | 'read' | 'createdAt' | 'date'>) => {
+    const now = new Date();
     const newNotification = {
       ...notification,
       id: Date.now().toString(),
       read: false,
-      createdAt: new Date(),
+      createdAt: now,
+      date: now, // Set date to be same as createdAt
     };
 
     setNotifications(prev => [newNotification, ...prev]);
@@ -66,22 +70,26 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Mock notifications for testing
   useEffect(() => {
-    const mockNotifications = [
+    const now = new Date();
+    const mockNotifications: Notification[] = [
       {
         id: '1',
         title: 'Nova tarefa atribuída',
         message: 'Você foi designado para a tarefa "Declaração IR 2023"',
-        type: 'panel' as const,
+        type: 'panel',
         read: false,
         createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        date: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        link: '/dashboard/tasks', // Added link property
       },
       {
         id: '2',
         title: 'Prazo chegando',
         message: 'A tarefa "Folha de Pagamento" vence em 2 dias',
-        type: 'email' as const,
+        type: 'email',
         read: true,
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+        date: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
       },
     ];
 
