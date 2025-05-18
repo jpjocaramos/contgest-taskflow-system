@@ -38,8 +38,29 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
+// Define the Task interface
+interface Task {
+  id: string;
+  title: string;
+  company: string;
+  responsible: string;
+  type: string;
+  dueDate: string;
+  priority: 'high' | 'medium' | 'low';
+  description: string;
+  completedDate?: string; // Make completedDate optional with '?'
+}
+
+// Define the tasks state interface
+interface TasksState {
+  todo: Task[];
+  inProgress: Task[];
+  waitingClient: Task[];
+  completed: Task[];
+}
+
 // Mock task data
-const initialTasks = {
+const initialTasks: TasksState = {
   todo: [
     {
       id: '1',
@@ -117,9 +138,9 @@ const priorityColors = {
 };
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<TasksState>(initialTasks);
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
-  const [newTask, setNewTask] = useState({
+  const [newTask, setNewTask] = useState<Omit<Task, 'id' | 'completedDate'>>({
     title: '',
     company: '',
     responsible: '',
@@ -129,11 +150,11 @@ const Tasks = () => {
     description: '',
   });
   const [viewType, setViewType] = useState('kanban');
-  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
   // Handle new task dialog form
   const handleNewTaskChange = (field: string, value: string) => {
-    setNewTask(prev => ({ ...prev, [field]: value }));
+    setNewTask(prev => ({ ...prev, [field]: value }) as typeof newTask);
   };
   
   // Add a new task
@@ -143,7 +164,7 @@ const Tasks = () => {
       return;
     }
     
-    const newTaskObj = {
+    const newTaskObj: Task = {
       id: Date.now().toString(),
       ...newTask,
     };
@@ -168,11 +189,11 @@ const Tasks = () => {
   };
   
   // Move a task to a different column
-  const moveTask = (taskId: string, fromColumn: string, toColumn: string) => {
-    const taskIndex = tasks[fromColumn as keyof typeof tasks].findIndex(task => task.id === taskId);
+  const moveTask = (taskId: string, fromColumn: keyof TasksState, toColumn: keyof TasksState) => {
+    const taskIndex = tasks[fromColumn].findIndex(task => task.id === taskId);
     if (taskIndex === -1) return;
     
-    const taskToMove = tasks[fromColumn as keyof typeof tasks][taskIndex];
+    const taskToMove = tasks[fromColumn][taskIndex];
     const updatedTask = { ...taskToMove };
     
     // Add completedDate if moving to completed column
@@ -185,15 +206,15 @@ const Tasks = () => {
     
     setTasks(prev => ({
       ...prev,
-      [fromColumn]: prev[fromColumn as keyof typeof tasks].filter(task => task.id !== taskId),
-      [toColumn]: [...prev[toColumn as keyof typeof tasks], updatedTask],
+      [fromColumn]: prev[fromColumn].filter(task => task.id !== taskId),
+      [toColumn]: [...prev[toColumn], updatedTask],
     }));
     
     toast.success('Tarefa movida com sucesso!');
   };
   
   // View task details
-  const viewTaskDetails = (task: any) => {
+  const viewTaskDetails = (task: Task) => {
     setSelectedTask(task);
   };
   
