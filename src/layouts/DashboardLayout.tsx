@@ -4,7 +4,6 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { NotificationProvider } from '../contexts/NotificationContext';
 import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
 
 const DashboardLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -21,8 +20,7 @@ const DashboardLayout: React.FC = () => {
         
         {/* Main Content */}
         <div className="flex flex-col flex-1 overflow-hidden">
-          <Header />
-          
+          {/* Main Content Area */}
           <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <div className="container-app">
               <Outlet />

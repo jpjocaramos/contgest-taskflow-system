@@ -1,112 +1,102 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from 'sonner';
 
 interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'email' | 'popup' | 'panel';
   read: boolean;
-  date: Date;
-  link?: string;
+  createdAt: Date;
 }
 
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
+  addNotification: (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
-  addNotification: (notification: Omit<Notification, 'id' | 'read' | 'date'>) => void;
+  clearNotifications: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-// Mock initial notifications
-const INITIAL_NOTIFICATIONS: Notification[] = [
-  {
-    id: '1',
-    title: 'Tarefa vencida',
-    message: 'A tarefa "Declaração mensal" está atrasada',
-    type: 'warning',
-    read: false,
-    date: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-    link: '/dashboard/tasks'
-  },
-  {
-    id: '2',
-    title: 'Novo cadastro',
-    message: 'Empresa "Tech Solutions Ltda" foi cadastrada',
-    type: 'info',
-    read: false,
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    link: '/dashboard/companies'
-  },
-  {
-    id: '3',
-    title: 'Regime tributário',
-    message: 'Lembrete: Verificação trimestral dos regimes tributários',
-    type: 'info',
-    read: true,
-    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-  }
-];
+export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
-  
-  // Load notifications from localStorage on initial render
-  useEffect(() => {
-    const storedNotifications = localStorage.getItem('contgest_notifications');
-    if (storedNotifications) {
-      setNotifications(JSON.parse(storedNotifications).map((n: any) => ({
-        ...n,
-        date: new Date(n.date)
-      })));
-    }
-  }, []);
-  
-  // Save notifications to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('contgest_notifications', JSON.stringify(notifications));
-  }, [notifications]);
-  
   const unreadCount = notifications.filter(n => !n.read).length;
-  
-  const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, read: true } 
-          : notification
-      )
-    );
-  };
-  
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, read: true }))
-    );
-  };
-  
-  const addNotification = (notification: Omit<Notification, 'id' | 'read' | 'date'>) => {
-    const newNotification: Notification = {
+
+  // Add a notification
+  const addNotification = (notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) => {
+    const newNotification = {
       ...notification,
       id: Date.now().toString(),
       read: false,
-      date: new Date()
+      createdAt: new Date(),
     };
-    
+
     setNotifications(prev => [newNotification, ...prev]);
+
+    // Show toast for popup notifications
+    if (notification.type === 'popup') {
+      toast(notification.title, {
+        description: notification.message,
+        duration: 5000,
+      });
+    }
   };
-  
+
+  // Mark a notification as read
+  const markAsRead = (id: string) => {
+    setNotifications(prev =>
+      prev.map(n => (n.id === id ? { ...n, read: true } : n))
+    );
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  // Clear all notifications
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
+  // Mock notifications for testing
+  useEffect(() => {
+    const mockNotifications = [
+      {
+        id: '1',
+        title: 'Nova tarefa atribuída',
+        message: 'Você foi designado para a tarefa "Declaração IR 2023"',
+        type: 'panel' as const,
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+      },
+      {
+        id: '2',
+        title: 'Prazo chegando',
+        message: 'A tarefa "Folha de Pagamento" vence em 2 dias',
+        type: 'email' as const,
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+      },
+    ];
+
+    setNotifications(mockNotifications);
+  }, []);
+
   return (
-    <NotificationContext.Provider 
-      value={{ 
-        notifications, 
-        unreadCount, 
-        markAsRead, 
-        markAllAsRead, 
-        addNotification 
+    <NotificationContext.Provider
+      value={{
+        notifications,
+        unreadCount,
+        addNotification,
+        markAsRead,
+        markAllAsRead,
+        clearNotifications,
       }}
     >
       {children}

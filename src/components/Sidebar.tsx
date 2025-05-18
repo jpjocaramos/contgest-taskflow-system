@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Home, 
@@ -12,12 +12,16 @@ import {
   User, 
   ChevronRight,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 
 const Sidebar = () => {
-  const { hasPermission } = useAuth();
+  const { hasPermission, logout, user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -60,13 +64,6 @@ const Sidebar = () => {
       module: 'reports'
     },
     { 
-      path: '/dashboard/users', 
-      label: 'Usuários', 
-      icon: <User size={20} />, 
-      permission: 'view',
-      module: 'users'
-    },
-    { 
       path: '/dashboard/settings', 
       label: 'Configurações', 
       icon: <Settings size={20} />, 
@@ -74,6 +71,11 @@ const Sidebar = () => {
       module: 'settings'
     },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -96,22 +98,59 @@ const Sidebar = () => {
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 ${expanded ? "w-64" : "w-20"} flex flex-col`}>
         {/* Logo */}
-        <div className="flex items-center justify-between p-4 border-b">
-          {expanded && (
-            <Link to="/dashboard" className="flex items-center">
-              <span className="text-xl font-bold text-primary">Cont<span className="text-secondary">Gest</span></span>
-            </Link>
-          )}
+        <div className="flex items-center justify-center p-4 border-b">
+          <Link to="/dashboard" className="flex items-center">
+            <img 
+              src="/lovable-uploads/8f4c0a83-a44c-4bb1-b78a-6d917ea2a1ac.png" 
+              alt="ContaGest Logo" 
+              className="h-8" 
+            />
+          </Link>
           <button 
             onClick={() => setExpanded(!expanded)} 
-            className="p-1 rounded-full hover:bg-gray-100 hidden md:block"
+            className="p-1 rounded-full hover:bg-gray-100 hidden md:block absolute right-4"
           >
             <ChevronRight size={20} className={`transform transition-transform ${expanded ? "" : "rotate-180"}`} />
           </button>
         </div>
         
+        {/* User Profile */}
+        {expanded && (
+          <div className="border-b p-4">
+            <div className="flex items-center space-x-3 mb-3">
+              <Avatar>
+                <AvatarImage src="/placeholder.svg" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <Link 
+                  to="/dashboard/user-config" 
+                  className="text-sm font-medium hover:text-primary transition-colors"
+                >
+                  João da Silva
+                </Link>
+                <span className="text-xs text-muted-foreground">Contador</span>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full flex items-center justify-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut size={14} />
+              <span>Sair</span>
+            </Button>
+          </div>
+        )}
+        
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4">
+          {expanded && (
+            <div className="px-4 mb-1">
+              <span className="text-xs font-medium text-gray-500">Menu Principal</span>
+            </div>
+          )}
           <ul className="space-y-1 px-2">
             {menuItems.map((item) => 
               hasPermission(item.module, item.permission as 'view') && (

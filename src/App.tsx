@@ -13,6 +13,7 @@ import CompanyForm from "./pages/CompanyForm";
 import People from "./pages/People";
 import PersonForm from "./pages/PersonForm";
 import Tasks from "./pages/Tasks";
+import UserConfig from "./pages/UserConfig";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="people/new" element={<PersonForm />} />
               <Route path="people/:id" element={<PersonForm />} />
               <Route path="tasks" element={<Tasks />} />
+              <Route path="user-config" element={<UserConfig />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />

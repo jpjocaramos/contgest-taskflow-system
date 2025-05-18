@@ -1,107 +1,71 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface User {
   id: string;
   name: string;
   email: string;
   role: 'admin' | 'employee';
-  avatar?: string;
-  permissions: {
-    [key: string]: {
-      view: boolean;
-      edit: boolean;
-      delete: boolean;
-    }
-  };
 }
 
 interface AuthContextType {
-  user: User | null;
   isAuthenticated: boolean;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  hasPermission: (module: string, action: 'view' | 'edit' | 'delete') => boolean;
+  hasPermission: (module: string, action: 'view' | 'create' | 'update' | 'delete') => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user data - in a real app, this would come from an API
-const MOCK_USERS = [
-  {
-    id: '1',
-    name: 'Admin User',
-    email: 'admin@contgest.com',
-    password: 'admin123',
-    role: 'admin' as const,
-    avatar: '',
-    permissions: {
-      companies: { view: true, edit: true, delete: true },
-      people: { view: true, edit: true, delete: true },
-      tasks: { view: true, edit: true, delete: true },
-      users: { view: true, edit: true, delete: true },
-    }
-  },
-  {
-    id: '2',
-    name: 'Employee User',
-    email: 'employee@contgest.com',
-    password: 'employee123',
-    role: 'employee' as const,
-    avatar: '',
-    permissions: {
-      companies: { view: true, edit: true, delete: false },
-      people: { view: true, edit: true, delete: false },
-      tasks: { view: true, edit: true, delete: false },
-      users: { view: false, edit: false, delete: false },
-    }
-  },
-];
+// Mock user for development
+const mockUser = {
+  id: '1',
+  name: 'João da Silva',
+  email: 'joao@contgest.com',
+  role: 'admin' as const,
+};
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const navigate = useNavigate();
-  
-  // Check for stored user on initial load
-  useEffect(() => {
-    const storedUser = localStorage.getItem('contgest_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(mockUser); // Start with mock user for development
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Start as authenticated for development
 
-  const login = async (email: string, password: string): Promise<void> => {
-    // In a real app, this would make an API call
-    const foundUser = MOCK_USERS.find(u => u.email === email && u.password === password);
-    
-    if (foundUser) {
-      const { password, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('contgest_user', JSON.stringify(userWithoutPassword));
-      toast.success('Login realizado com sucesso!');
-      navigate('/dashboard');
-    } else {
-      toast.error('Email ou senha inválidos');
-      throw new Error('Invalid credentials');
+  const login = async (email: string, password: string) => {
+    // Mock login functionality
+    if (email && password) {
+      setUser(mockUser);
+      setIsAuthenticated(true);
     }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('contgest_user');
-    navigate('/login');
-    toast.success('Logout realizado com sucesso');
+    setIsAuthenticated(false);
   };
 
-  const hasPermission = (module: string, action: 'view' | 'edit' | 'delete'): boolean => {
-    if (!user) return false;
-    return user.permissions[module]?.[action] || false;
+  const hasPermission = (module: string, action: 'view' | 'create' | 'update' | 'delete'): boolean => {
+    // Mock permission checks
+    if (!isAuthenticated || !user) {
+      return false;
+    }
+
+    if (user.role === 'admin') {
+      return true;
+    }
+
+    // For employees, restrict some modules/actions
+    if (user.role === 'employee') {
+      if (module === 'settings' || module === 'users') {
+        return action === 'view';
+      }
+      return true;
+    }
+
+    return false;
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, hasPermission }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, hasPermission }}>
       {children}
     </AuthContext.Provider>
   );
