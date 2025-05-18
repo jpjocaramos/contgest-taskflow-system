@@ -5,6 +5,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
   role: 'admin' | 'employee';
 }
 
@@ -23,6 +24,7 @@ const mockUser = {
   id: '1',
   name: 'João da Silva',
   email: 'joao@contgest.com',
+  avatar: '/placeholder.svg',
   role: 'admin' as const,
 };
 

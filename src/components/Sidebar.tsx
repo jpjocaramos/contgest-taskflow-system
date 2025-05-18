@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 const Sidebar = () => {
   const { hasPermission, logout, user } = useAuth();
@@ -64,7 +65,14 @@ const Sidebar = () => {
       module: 'reports'
     },
     { 
-      path: '/dashboard/settings', 
+      path: '/dashboard/users', 
+      label: 'Usuários', 
+      icon: <Users size={20} />, 
+      permission: 'view',
+      module: 'users'
+    },
+    { 
+      path: '/dashboard/user-config', 
       label: 'Configurações', 
       icon: <Settings size={20} />, 
       permission: 'view',
@@ -75,6 +83,12 @@ const Sidebar = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  // Get company info from local storage or mock data
+  const companyInfo = {
+    name: localStorage.getItem('companyName') || 'Tech Solutions Ltda',
+    cnpj: localStorage.getItem('companyCNPJ') || '12.345.678/0001-90',
   };
 
   return (
@@ -103,7 +117,7 @@ const Sidebar = () => {
             <img 
               src="/lovable-uploads/8f4c0a83-a44c-4bb1-b78a-6d917ea2a1ac.png" 
               alt="ContaGest Logo" 
-              className="h-8" 
+              className="h-10" // Increased logo size
             />
           </Link>
           <button 
@@ -119,19 +133,22 @@ const Sidebar = () => {
           <div className="border-b p-4">
             <div className="flex items-center space-x-3 mb-3">
               <Avatar>
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarImage src={user?.avatar || "/placeholder.svg"} />
+                <AvatarFallback>
+                  {user?.name ? user.name.charAt(0) : "U"}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <Link 
-                  to="/dashboard/user-config" 
+                  to="/dashboard/profile" 
                   className="text-sm font-medium hover:text-primary transition-colors"
                 >
-                  João da Silva
+                  {user?.name || "João da Silva"}
                 </Link>
                 <span className="text-xs text-muted-foreground">Contador</span>
               </div>
             </div>
+
             <Button 
               variant="outline" 
               size="sm" 
@@ -141,6 +158,13 @@ const Sidebar = () => {
               <LogOut size={14} />
               <span>Sair</span>
             </Button>
+
+            {/* Company Registration Info */}
+            <div className="mt-3 pt-3 border-t">
+              <h4 className="text-xs font-medium text-muted-foreground">Registrado para:</h4>
+              <p className="text-sm font-medium mt-1">{companyInfo.name}</p>
+              <p className="text-xs text-muted-foreground">{companyInfo.cnpj}</p>
+            </div>
           </div>
         )}
         

@@ -14,6 +14,9 @@ import People from "./pages/People";
 import PersonForm from "./pages/PersonForm";
 import Tasks from "./pages/Tasks";
 import UserConfig from "./pages/UserConfig";
+import Profile from "./pages/Profile";
+import Users from "./pages/Users";
+import UserForm from "./pages/UserForm";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -42,6 +45,11 @@ const App = () => (
               <Route path="people/:id" element={<PersonForm />} />
               <Route path="tasks" element={<Tasks />} />
               <Route path="user-config" element={<UserConfig />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="users" element={<Users />} />
+              <Route path="users/new" element={<UserForm />} />
+              <Route path="users/:id" element={<UserForm />} />
+              <Route path="users/:id/edit" element={<UserForm />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
