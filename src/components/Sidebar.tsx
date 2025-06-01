@@ -244,10 +244,10 @@ const Sidebar = () => {
 
         {/* Company Registration Info - Moved to bottom */}
         {expanded && (
-          <div className="border-t p-4 mt-auto">
+          <div className="bg-[#f8fafc] rounded-lg p-4 mt-auto mx-2">
             <h4 className="text-xs font-medium text-muted-foreground">Registrado para:</h4>
             <p className="text-sm font-medium mt-1">{companyInfo.name}</p>
-            <p className="text-xs text-muted-foreground mb-4">{companyInfo.cnpj}</p>
+            <p className="text-xs text-muted-foreground mb-[10px]">{companyInfo.cnpj}</p>
           </div>
         )}
       </aside>
