@@ -17,7 +17,7 @@ const Index = () => {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gradient-to-b from-blue-50 to-indigo-50">
       <header className="bg-white shadow-sm">
-        <div className="container-app py-4 flex items-center justify-between">
+        <div className="container-app py-6 flex items-center justify-between">
           <div className="h-12">
             <img 
               src="/lovable-uploads/59880246-d998-4891-97b3-6b1619e864d3.png" 
